@@ -36,7 +36,7 @@ class App extends Component {
           Modal
         </button>
         {showModal && (
-          <Modal onClose={this.toggleModal}>
+          <Modal onClose={toggleModal}>
             <img src="" alt="" />
           </Modal>
         )}

@@ -7,16 +7,18 @@ const modalRoot = document.querySelector('#modal-root');
 class Modal extends Component {
 
   componentDidMount() {
-//  const { onClose } = this.props;
-
-    window.addEventListener('keydown', e => {
-      if (e.code === 'Escape') {
-        this.props.onClose();
-        console.log(e.code);
-      }
-
-    });
+    window.addEventListener('keydown', this.hendleKeyDown);
   }
+
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.hendleKeyDown);
+  }
+
+  hendleKeyDown = e => {
+    if (e.code === 'Escape') {
+      this.props.onClose();
+    }
+  };
 
   render() {
     return createPortal(
