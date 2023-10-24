@@ -18,12 +18,13 @@ class App extends Component {
   }
   render() {
     const { showModal } = this.state;
+    const { toggleModal } = this;
     return (
       <div className={style.App}>
         <Searchbar />
         <button
           type="button"
-          onClick={this.toggleModal}
+          onClick={toggleModal}
           style={{
             margin: 8,
             padding: '12px 16px',
@@ -34,10 +35,11 @@ class App extends Component {
         >
           Modal
         </button>
-        {showModal && <Modal>
-
-          <img src="" alt="" />
-        </Modal>}
+        {showModal && (
+          <Modal onClose={this.toggleModal}>
+            <img src="" alt="" />
+          </Modal>
+        )}
       </div>
     );
   }
