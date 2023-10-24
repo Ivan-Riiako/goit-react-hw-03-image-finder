@@ -8,16 +8,16 @@ const Searchbar = ({ onSubmit }) => {
           <header className={style.Searchbar}>
             <form className={style.SearchForm} onClick={onSubmit}>
               <button type="submit" className={style.SearchForm_button}>
-                <span className={style.SearchForm_button_label} >
+                {/* <span className={style.SearchForm_button_label} >
                   Search
-                </span>
+                </span> */}
               </button>
 
               <input
                 className={style.SearchForm_input}
                 type="text"
-                autocomplete="off"
-                autofocus
+                autoComplete='off'
+                autoFocus
                 placeholder="Search images and photos"
               />
             </form>
