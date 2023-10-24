@@ -5,10 +5,10 @@ import style from './Searchbar.module.css';
 const Searchbar = ({ onSubmit }) => {
     
         return (
-          <header className={style.Searchbarearchbar}>
+          <header className={style.Searchbar}>
             <form className={style.SearchForm} onClick={onSubmit}>
               <button type="submit" className={style.SearchForm_button}>
-                <span className={style.SearchForm_button_label} c>
+                <span className={style.SearchForm_button_label} >
                   Search
                 </span>
               </button>
@@ -22,8 +22,8 @@ const Searchbar = ({ onSubmit }) => {
               />
             </form>
           </header>
-        );
-    
+  );
+  
 }
 
 
