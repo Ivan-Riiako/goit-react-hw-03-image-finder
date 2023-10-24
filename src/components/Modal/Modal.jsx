@@ -20,9 +20,15 @@ class Modal extends Component {
     }
   };
 
+  hendleBackdropClick = event => {
+    if (event.target === event.currentTarget) {
+      this.props.onClose();
+    }
+  }
+
   render() {
     return createPortal(
-      <div className={style.Overlay}>
+      <div className={style.Overlay} onClick={this.hendleBackdropClick}>
         <div className={style.Modal}>{this.props.children}</div>
       </div>,
       modalRoot
