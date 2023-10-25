@@ -10,6 +10,11 @@ class App extends Component {
     showModal:false,
   };
 
+  componentDidUpdate() {
+  
+  }
+
+
   toggleModal = () => {
     this.setState(({ showModal }) => ({
     showModal:!showModal,
