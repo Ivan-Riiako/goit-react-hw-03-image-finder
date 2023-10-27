@@ -1,84 +1,100 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
+import style from './App.module.css';
+
 import Searchbar from './Searchbar/Searchbar';
 import Modal from './Modal';
-import style from './App.module.css';
-import ImageGallery from './ImageGallery';
-import ImageGalleryItem from './ImageGalleryItem';
+// import ImageGallery from './ImageGallery';
+// import ImageGalleryItem from './ImageGalleryItem';
 // import Button from './Button';
 // import Loader from './Loader';
 
-axios.defaults.baseURL =
-  'https://hn.algolia.com/aphttps://pixabay.com/api/?key=33947023-c15fa4d03e325678c88d2d925';
+const BASE_URL = 'https://pixabay.com/api/';
+const API_KEY = '33947023-c15fa4d03e325678c88d2d925';
+const instance = axios.create({
+  baseURL: BASE_URL,
+  params: {
+    key: API_KEY,
+    image_type: 'photo',
+    orientation: 'horizontal',
+    safesearch: true,
+    per_page: 20,
+  },
+});
+// Запрос на сервер
+    async function fetchhPhoto(name, page = 1) {
+      return await instance({ params: { q: `${name}`, page: `${page}` } })
+        .then(function (response) {
+          console.log(response);
+          return response;
+        })
+        .catch(function (error) {
+          // handle error
+          if (error.response) {
+            // Запрос был сделан, и сервер ответил кодом состояния, который
+            // выходит за пределы 2xx
+            console.log(error.response.data);
+            console.log(error.response.status);
+            console.log(error.response.headers);
+          }
+          console.log(error);
+        }
+        );
+}
+    
 
-// const ArticleList = ({ pictures }) => (
-//   <ul>
-//     {pictures.map(({ objectID, url, title }) => (
-//       <li key={objectID}>
-//         <a href={url} target="_blank" rel="noreferrer noopener">
-//           {title}
-//         </a>
-//       </li>
-//     ))}
-//   </ul>
-// );
-
-// const ApiKey = '33947023-c15fa4d03e325678c88d2d925';
 
 class App extends Component {
   state = {
     showModal: false,
+    dataSearch: '',
     pictures: null,
-    loading:true,
+    loading: true,
   };
-  componentDidMount() {
-    setTimeout(() => {
-      fetch(
-      'https://pixabay.com/api/?key=33947023-c15fa4d03e325678c88d2d925&q=flowers&image_type=photo'
-    )
-      .then(res => res.json)
-        .then(pictures => this.setState({ pictures }))
-        .then(console.log)
-        .finally(() => this.setState({ loading: false }));
-    }
-      ,10000)
-  
-  
-  }
-  // componentDidUpdate() {
-  
-  // }
 
+  componentDidMount() {
+
+    
+  }
+
+  componentDidUpdate(_, prevState) {
+    const {  dataSearch } = this.state;
+    if (
+      prevState.dataSearch !== dataSearch &&
+      prevState.pictures !== this.state.pictures
+    ) {
+      
+    setTimeout(() => {
+      const pictures = fetchhPhoto(dataSearch);
+      this.setState({ pictures });
+    }, 1000);
+    }
+  }
+
+  handleSubmit = data => {
+    const { value } = data;
+    // if (contacts.some(contact => contact.name === name)) {
+    //   alert(`${name} is already in contacrs`);
+    //   return;
+    // }
+
+    this.setState({ dataSearch: value });
+  };
 
   toggleModal = () => {
     this.setState(({ showModal }) => ({
-    showModal:!showModal,
-    }))
-  
-  }
+      showModal: !showModal,
+    }));
+  };
   render() {
-    const { showModal,pictures } = this.state;
-    const { toggleModal } = this;
+    const { showModal } = this.state;
+    const { toggleModal, handleSubmit } = this;
     return (
       <div className={style.App}>
-        <Searchbar />
-
-        <ImageGallery>
-          <div><p>efwefewfwefw</p></div>
-          {pictures &&
-            pictures.hits.map((picture, index) => {
-              return (
-                <ImageGalleryItem
-                  key={index}
-                  src={picture.previewURL}
-                  alt={picture.tags}
-                />
-              );
-            })
-          }
-        </ImageGallery>
-
+        <Searchbar onSubmit={handleSubmit} />
+        {/* <ImageGallery>
+        </ImageGallery> */}
         <button
           type="button"
           onClick={toggleModal}
