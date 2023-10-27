@@ -22,26 +22,7 @@ const instance = axios.create({
     per_page: 20,
   },
 });
-// Запрос на сервер
-    async function fetchhPhoto(name, page = 1) {
-      return await instance({ params: { q: `${name}`, page: `${page}` } })
-        .then(function (response) {
-          console.log(response);
-          return response;
-        })
-        .catch(function (error) {
-          // handle error
-          if (error.response) {
-            // Запрос был сделан, и сервер ответил кодом состояния, который
-            // выходит за пределы 2xx
-            console.log(error.response.data);
-            console.log(error.response.status);
-            console.log(error.response.headers);
-          }
-          console.log(error);
-        }
-        );
-}
+
     
 
 
@@ -53,25 +34,34 @@ class App extends Component {
     loading: true,
   };
 
-  componentDidMount() {
+  componentDidMount() {}
 
-    
-  }
-
-  componentDidUpdate(_, prevState) {
-    const {  dataSearch } = this.state;
-    if (
-      prevState.dataSearch !== dataSearch &&
-      prevState.pictures !== this.state.pictures
-    ) {
-      
-    setTimeout(() => {
+   componentDidUpdate(_, prevState) {
+    const { dataSearch } = this.state;
+    const { fetchhPhoto } = this;
+    if (prevState.dataSearch !== this.state.dataSearch) {
       const pictures = fetchhPhoto(dataSearch);
       this.setState({ pictures });
-    }, 1000);
     }
   }
-
+  // Запрос на сервер
+  fetchhPhoto = (value, page = 1) => {
+    return instance({ params: { q: `${value}`, page: `${page}` } })
+      .then(function (pictures) {
+        return pictures ;
+      })
+      .catch(function (error) {
+        // handle error
+        if (error.response) {
+          // Запрос был сделан, и сервер ответил кодом состояния, который
+          // выходит за пределы 2xx
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        }
+        console.log(error);
+      });
+  }
   handleSubmit = data => {
     const { value } = data;
     // if (contacts.some(contact => contact.name === name)) {
@@ -88,6 +78,8 @@ class App extends Component {
     }));
   };
   render() {
+    console.log('odun');
+    
     const { showModal } = this.state;
     const { toggleModal, handleSubmit } = this;
     return (
