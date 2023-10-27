@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 // import PropTypes from 'prop-types';
 import style from './Searchbar.module.css';
 
-class Searchbar extends Component{
+class Searchbar extends PureComponent {
   state = {
     value: '',
   };
 
   handleChange = e => {
     const { value } = e.currentTarget;
-    this.setState({  value });
+    this.setState({ value });
   };
 
   handleSubmit = e => {
@@ -19,8 +19,8 @@ class Searchbar extends Component{
     // e.currentTarget.reset();
   };
   render() {
-     const { value } = this.state;
-     const { handleChange, handleSubmit } = this;
+    const { value } = this.state;
+    const { handleChange, handleSubmit } = this;
     return (
       <header className={style.Searchbar}>
         <form className={style.SearchForm} onClick={handleSubmit}>

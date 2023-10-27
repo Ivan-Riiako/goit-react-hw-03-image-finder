@@ -5,7 +5,7 @@ import style from './App.module.css';
 
 import Searchbar from './Searchbar/Searchbar';
 import Modal from './Modal';
-// import ImageGallery from './ImageGallery';
+import ImageGallery from './ImageGallery';
 // import ImageGalleryItem from './ImageGalleryItem';
 // import Button from './Button';
 // import Loader from './Loader';
@@ -36,19 +36,19 @@ class App extends Component {
 
   componentDidMount() {}
 
-   componentDidUpdate(_, prevState) {
+   async componentDidUpdate(_, prevState) {
     const { dataSearch } = this.state;
     const { fetchhPhoto } = this;
     if (prevState.dataSearch !== this.state.dataSearch) {
-      const pictures = fetchhPhoto(dataSearch);
+      const pictures = await fetchhPhoto(`${dataSearch}`);
       this.setState({ pictures });
     }
   }
   // Запрос на сервер
-  fetchhPhoto = (value, page = 1) => {
-    return instance({ params: { q: `${value}`, page: `${page}` } })
+   fetchhPhoto = (value, page = 1) => {
+    return  instance({ params: { q: `${value}`, page: `${page}` } })
       .then(function (pictures) {
-        return pictures ;
+        return pictures;
       })
       .catch(function (error) {
         // handle error
@@ -80,13 +80,29 @@ class App extends Component {
   render() {
     console.log('odun');
     
-    const { showModal } = this.state;
+    const { showModal, pictures } = this.state;
+    console.log(pictures);
     const { toggleModal, handleSubmit } = this;
     return (
       <div className={style.App}>
         <Searchbar onSubmit={handleSubmit} />
-        {/* <ImageGallery>
-        </ImageGallery> */}
+        {pictures &&<ImageGallery items={pictures} />}
+        {/* {pictures &&
+          pictures.data.hits.map(
+      ({
+        webformatURL,
+        tags,
+        largeImageURL,
+        id,
+      }) => (
+            <li key={id} >
+              <img
+                
+                src={webformatURL}
+                alt={tags}
+              />
+            </li>
+          ))} */}
         <button
           type="button"
           onClick={toggleModal}
