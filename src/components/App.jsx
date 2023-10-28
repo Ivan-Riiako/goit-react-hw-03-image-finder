@@ -32,7 +32,7 @@ class App extends Component {
     dataSearch: '',
     pictures: null,
     selectPicture: null,
-    loading: true,
+    loading: false,
   };
 
   componentDidMount() {}
@@ -40,9 +40,11 @@ class App extends Component {
   async componentDidUpdate(_, prevState) {
     const { dataSearch } = this.state;
     const { fetchhPhoto } = this;
+
     if (prevState.dataSearch !== this.state.dataSearch) {
       const pictures = await fetchhPhoto(`${dataSearch}`);
       this.setState({ pictures });
+      console.log(pictures);
     }
   }
 
@@ -67,21 +69,24 @@ class App extends Component {
 
   handleSubmit = data => {
     const { value } = data;
-    // if (contacts.some(contact => contact.name === name)) {
-    //   alert(`${name} is already in contacrs`);
-    //   return;
-    // }
 
+    this.toggleLoading()
     this.setState({ dataSearch: value });
   };
 
+  toggleLoading = () => {
+    this.setState(({ loading }) => ({
+      loading: !loading,
+    }));
+  };
+  
   toggleModal = () => {
     this.setState(({ showModal }) => ({
       showModal: !showModal,
     }));
   };
-  
-  handleSelectingPicture = ( src, alt ) => {
+
+  handleSelectingPicture = (src, alt) => {
     this.setState({
       selectPicture: { src, alt },
     });
@@ -97,7 +102,7 @@ class App extends Component {
         {pictures && (
           <ImageGallery items={pictures} onChoose={handleSelectingPicture} />
         )}
-        {loading&&<Loader/>}
+        {loading && <Loader />}
         {showModal && (
           <Modal onClose={toggleModal}>
             <img src={selectPicture.src} alt={selectPicture.alt} />
