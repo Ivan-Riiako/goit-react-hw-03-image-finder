@@ -19,7 +19,7 @@ const instance = axios.create({
     image_type: 'photo',
     orientation: 'horizontal',
     safesearch: true,
-    per_page: 20,
+    per_page: 12,
   },
 });
 
@@ -31,12 +31,13 @@ class App extends Component {
     showModal: false,
     dataSearch: '',
     pictures: null,
+    selectPicture: null,
     loading: true,
   };
 
   componentDidMount() {}
 
-   async componentDidUpdate(_, prevState) {
+  async componentDidUpdate(_, prevState) {
     const { dataSearch } = this.state;
     const { fetchhPhoto } = this;
     if (prevState.dataSearch !== this.state.dataSearch) {
@@ -45,8 +46,8 @@ class App extends Component {
     }
   }
   // Запрос на сервер
-   fetchhPhoto = (value, page = 1) => {
-    return  instance({ params: { q: `${value}`, page: `${page}` } })
+  fetchhPhoto = (value, page = 1) => {
+    return instance({ params: { q: `${value}`, page: `${page}` } })
       .then(function (pictures) {
         return pictures;
       })
@@ -61,7 +62,7 @@ class App extends Component {
         }
         console.log(error);
       });
-  }
+  };
   handleSubmit = data => {
     const { value } = data;
     // if (contacts.some(contact => contact.name === name)) {
@@ -77,33 +78,24 @@ class App extends Component {
       showModal: !showModal,
     }));
   };
+  handleSelectingPicture = ( src, alt ) => {
+    this.setState({
+      selectPicture: { src, alt },
+    });
+    this.toggleModal();
+  };
+
   render() {
-    console.log('odun');
-    
-    const { showModal, pictures } = this.state;
-    console.log(pictures);
-    const { toggleModal, handleSubmit } = this;
+    const { showModal, pictures, selectPicture } = this.state;
+    const { handleSelectingPicture, toggleModal, handleSubmit } = this;
     return (
       <div className={style.App}>
         <Searchbar onSubmit={handleSubmit} />
-        {pictures &&<ImageGallery items={pictures} />}
-        {/* {pictures &&
-          pictures.data.hits.map(
-      ({
-        webformatURL,
-        tags,
-        largeImageURL,
-        id,
-      }) => (
-            <li key={id} >
-              <img
-                
-                src={webformatURL}
-                alt={tags}
-              />
-            </li>
-          ))} */}
-        <button
+        {pictures && (
+          <ImageGallery items={pictures} onChoose={handleSelectingPicture} />
+        )}
+
+        {/* <button
           type="button"
           onClick={toggleModal}
           style={{
@@ -115,10 +107,11 @@ class App extends Component {
           }}
         >
           Modal
-        </button>
+        </button> */}
+
         {showModal && (
           <Modal onClose={toggleModal}>
-            <img src="" alt="" />
+            <img src={selectPicture.src} alt={selectPicture.alt} />
           </Modal>
         )}
       </div>
