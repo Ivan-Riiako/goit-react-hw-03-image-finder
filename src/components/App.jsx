@@ -8,7 +8,7 @@ import Modal from './Modal';
 import ImageGallery from './ImageGallery';
 // import ImageGalleryItem from './ImageGalleryItem';
 // import Button from './Button';
-// import Loader from './Loader';
+import Loader from './Loader';
 
 const BASE_URL = 'https://pixabay.com/api/';
 const API_KEY = '33947023-c15fa4d03e325678c88d2d925';
@@ -86,7 +86,7 @@ class App extends Component {
   };
 
   render() {
-    const { showModal, pictures, selectPicture } = this.state;
+    const { showModal, pictures, selectPicture, loading } = this.state;
     const { handleSelectingPicture, toggleModal, handleSubmit } = this;
     return (
       <div className={style.App}>
@@ -94,21 +94,7 @@ class App extends Component {
         {pictures && (
           <ImageGallery items={pictures} onChoose={handleSelectingPicture} />
         )}
-
-        {/* <button
-          type="button"
-          onClick={toggleModal}
-          style={{
-            margin: 8,
-            padding: '12px 16px',
-            borderRadius: 4,
-            backgroundColor: 'gray',
-            color: 'white',
-          }}
-        >
-          Modal
-        </button> */}
-
+        {loading&&<Loader/>}
         {showModal && (
           <Modal onClose={toggleModal}>
             <img src={selectPicture.src} alt={selectPicture.alt} />
