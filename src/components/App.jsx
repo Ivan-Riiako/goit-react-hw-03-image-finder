@@ -45,6 +45,7 @@ class App extends Component {
       this.setState({ pictures });
     }
   }
+
   // Запрос на сервер
   fetchhPhoto = (value, page = 1) => {
     return instance({ params: { q: `${value}`, page: `${page}` } })
@@ -63,6 +64,7 @@ class App extends Component {
         console.log(error);
       });
   };
+
   handleSubmit = data => {
     const { value } = data;
     // if (contacts.some(contact => contact.name === name)) {
@@ -78,6 +80,7 @@ class App extends Component {
       showModal: !showModal,
     }));
   };
+  
   handleSelectingPicture = ( src, alt ) => {
     this.setState({
       selectPicture: { src, alt },
