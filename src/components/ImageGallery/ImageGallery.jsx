@@ -12,6 +12,7 @@ import Button from 'components/Button';
 class ImageGallery extends Component {
   state = {
     status: `idle`,
+    loading: false,
     arrayPictures: null,
     error: null,
     currentPage: 1,
@@ -38,14 +39,12 @@ class ImageGallery extends Component {
     }
   }
 
-  
-
   handleLoadMore = () => {
     const { dataSearch } = this.props;
     const { currentPage, totalPage } = this.state;
 
     if (totalPage > currentPage) {
-      // this.setState({ status: `pending` });
+      this.setState({ loading: true });
       const nextPage = currentPage + 1;
       this.setState({ currentPage: nextPage });
       api
@@ -59,17 +58,23 @@ class ImageGallery extends Component {
           }));
         })
         .catch(error => this.setState({ error, status: `rejected` }));
+      this.setState({ loading: false });
+      
     }
   };
   render() {
-    const { status, error, arrayPictures } = this.state;
+    const { status,loading, error, arrayPictures ,totalPage,currentPage} = this.state;
     const { handleLoadMore } = this;
+
+
     if (status === 'idle') {
       return <p>Введите название картинки</p>;
     }
+
     if (status === 'pending') {
       return <Loader />;
     }
+
     if (status === 'resolved') {
       return (
         <>
@@ -84,10 +89,14 @@ class ImageGallery extends Component {
                 />
               ))}
           </ul>
-          <Button onLoadMore={handleLoadMore} />
+          {loading&&<Loader />}
+          {totalPage > currentPage && !loading && (
+            <Button onLoadMore={handleLoadMore} />
+          )}
         </>
       );
     }
+
     if (status === 'rejected') {
       return <p>{error.message}</p>;
     }

@@ -21,7 +21,7 @@ function fetchhPhoto (value, page = 1)  {
       if (pictures.status === 200) {
         if (pictures.data.total===0) {
           return Promise.reject(
-            new Error(`Нет картинок с названием ${value}`)
+            new Error(`Не найдено картинок с названием ${value}`)
           );
         }
         return pictures;
