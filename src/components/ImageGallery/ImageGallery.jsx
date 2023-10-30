@@ -8,64 +8,73 @@ import ImageGalleryItem from 'components/ImageGalleryItem';
 import Loader from 'components/Loader';
 import Button from 'components/Button';
 
-
 class ImageGallery extends Component {
   state = {
     status: `idle`,
-    loading: false,
-    arrayPictures: null,
+    arrayPictures: [],
+    loading: true,
     error: null,
     currentPage: 1,
-    totalPage:null
+    totalPage: 0,
   };
 
-  async componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps, prevState) {
     const { dataSearch } = this.props;
-    if (prevProps.dataSearch !== dataSearch) {
-      this.setState({ status: `pending` });
+    const { currentPage } = this.state;
+    const { cleanGallery } = this;
 
-      await api
-        .fetchhPhoto(`${dataSearch}`)
-        .then(responseImagesPixabay => {
-          const arreyNormalaize = imagesArreyNormalaize(responseImagesPixabay);
-          const { arrayPictures, totalPage } = arreyNormalaize;
-          this.setState({
-            arrayPictures,
-            status: `resolved`,
-            totalPage,
-          });
-        })
-        .catch(error => this.setState({ error, status: `rejected` }));
+    if (
+      (prevProps.dataSearch !== dataSearch && prevProps.dataSearch !== '') ||
+      dataSearch === ''
+    ) {
+      cleanGallery();
     }
+    if (
+      prevProps.dataSearch !== dataSearch ||
+      prevState.currentPage !== currentPage
+    ) {
+      if ( prevProps.dataSearch !== dataSearch) {
+        this.setState({ status: `pending` });
+      }
+        await api
+          .fetchhPhoto(`${dataSearch}`, currentPage)
+          .then(responseImagesPixabay => {
+            const arreyNormalaize = imagesArreyNormalaize(
+              responseImagesPixabay
+            );
+            const { arrayPictures, totalPage } = arreyNormalaize;
+            this.setState(prevState => ({
+              arrayPictures: [...prevState.arrayPictures, ...arrayPictures],
+              status: `resolved`,
+              totalPage,
+            }));
+          })
+          .catch(error => this.setState({ error, status: `rejected` }));
+        // .finally(this.setState({ loading: false }));
+    }
+    this.setState({ loading: false });
   }
 
-  handleLoadMore = () => {
-    const { dataSearch } = this.props;
-    const { currentPage, totalPage } = this.state;
-
-    if (totalPage > currentPage) {
-      this.setState({ loading: true });
-      const nextPage = currentPage + 1;
-      this.setState({ currentPage: nextPage });
-      api
-        .fetchhPhoto(`${dataSearch}`, nextPage)
-        .then(responseImagesPixabay => {
-          const arreyNormalaize = imagesArreyNormalaize(responseImagesPixabay);
-          const { arrayPictures } = arreyNormalaize;
-          this.setState(prevState => ({
-            arrayPictures: [...prevState.arrayPictures, ...arrayPictures],
-            status: `resolved`,
-          }));
-        })
-        .catch(error => this.setState({ error, status: `rejected` }));
-      this.setState({ loading: false });
-      
-    }
+  cleanGallery = () => {
+    this.setState({
+      arrayPictures: [],
+      currentPage: 1,
+      totalPage: 0,
+      loading: false,
+    });
   };
-  render() {
-    const { status,loading, error, arrayPictures ,totalPage,currentPage} = this.state;
-    const { handleLoadMore } = this;
 
+  handleLoadMore = () => {
+    this.setState(prevState => ({
+      currentPage: prevState.currentPage + 1,
+      loading: true,
+    }));
+  };
+
+  render() {
+    const { status, error, arrayPictures, totalPage, currentPage, loading } =
+      this.state;
+    const { handleLoadMore } = this;
 
     if (status === 'idle') {
       return <p>Введите название картинки</p>;
@@ -89,10 +98,8 @@ class ImageGallery extends Component {
                 />
               ))}
           </ul>
-          {loading&&<Loader />}
-          {totalPage > currentPage && !loading && (
-            <Button onLoadMore={handleLoadMore} />
-          )}
+          {loading && <Loader />}
+          {totalPage > currentPage &&!loading&& <Button onLoadMore={handleLoadMore} />}
         </>
       );
     }

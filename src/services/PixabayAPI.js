@@ -17,7 +17,6 @@ const instance = axios.create({
 function fetchhPhoto (value, page = 1)  {
   return instance({ params: { q: `${value}`, page: `${page}` } })
     .then(function (pictures) {
-      console.log(pictures);
       if (pictures.status === 200) {
         if (pictures.data.total===0) {
           return Promise.reject(
