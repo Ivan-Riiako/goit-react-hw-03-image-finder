@@ -1,51 +1,69 @@
 import React, { Component } from 'react';
+
 import style from './ImageGallery.module.css';
-import ImageGalleryItem from 'components/ImageGalleryItem';
 import api from 'services/PixabayAPI';
-import Modal from 'components/Modal';
+import imagesArreyNormalaize from 'services/imagesArreyNormalaize';
+
+import ImageGalleryItem from 'components/ImageGalleryItem';
 import Loader from 'components/Loader';
-// import Button from './Button';
+import Button from 'components/Button';
 
 
 class ImageGallery extends Component {
   state = {
     status: `idle`,
-    showModal: false,
-    pictures: null,
-    selectPicture: null,
-    error:null,
+    arrayPictures: null,
+    error: null,
+    currentPage: 1,
+    totalPage:null
   };
 
-  async componentDidUpdate(prevProps, prevState) {
+  async componentDidUpdate(prevProps) {
     const { dataSearch } = this.props;
     if (prevProps.dataSearch !== dataSearch) {
       this.setState({ status: `pending` });
 
       await api
         .fetchhPhoto(`${dataSearch}`)
-        .then(pictures => {
-          this.setState({ pictures, status: `resolved` });
+        .then(responseImagesPixabay => {
+          const arreyNormalaize = imagesArreyNormalaize(responseImagesPixabay);
+          const { arrayPictures, totalPage } = arreyNormalaize;
+          this.setState({
+            arrayPictures,
+            status: `resolved`,
+            totalPage,
+          });
         })
         .catch(error => this.setState({ error, status: `rejected` }));
     }
   }
 
-  toggleModal = () => {
-    this.setState(({ showModal }) => ({
-      showModal: !showModal,
-    }));
-  };
-
-  handleSelectingPicture = (src, alt) => {
-    this.setState({
-      selectPicture: { src, alt },
-    });
-    this.toggleModal();
-  };
   
+
+  handleLoadMore = () => {
+    const { dataSearch } = this.props;
+    const { currentPage, totalPage } = this.state;
+
+    if (totalPage > currentPage) {
+      // this.setState({ status: `pending` });
+      const nextPage = currentPage + 1;
+      this.setState({ currentPage: nextPage });
+      api
+        .fetchhPhoto(`${dataSearch}`, nextPage)
+        .then(responseImagesPixabay => {
+          const arreyNormalaize = imagesArreyNormalaize(responseImagesPixabay);
+          const { arrayPictures } = arreyNormalaize;
+          this.setState(prevState => ({
+            arrayPictures: [...prevState.arrayPictures, ...arrayPictures],
+            status: `resolved`,
+          }));
+        })
+        .catch(error => this.setState({ error, status: `rejected` }));
+    }
+  };
   render() {
-    const { status,error, showModal, pictures, selectPicture } = this.state;
-    const { handleSelectingPicture, toggleModal } = this;
+    const { status, error, arrayPictures } = this.state;
+    const { handleLoadMore } = this;
     if (status === 'idle') {
       return <p>Введите название картинки</p>;
     }
@@ -56,24 +74,17 @@ class ImageGallery extends Component {
       return (
         <>
           <ul className={style.ImageGallery}>
-            {pictures &&
-              pictures.data.hits.map(
-                ({ webformatURL, tags, largeImageURL, id }) => (
-                  <ImageGalleryItem
-                    alt={tags}
-                    src={webformatURL}
-                    key={id}
-                    largeImageURL={largeImageURL}
-                    onChoose={handleSelectingPicture}
-                  />
-                )
-              )}
+            {arrayPictures &&
+              arrayPictures.map(({ webformatURL, tags, largeImageURL, id }) => (
+                <ImageGalleryItem
+                  alt={tags}
+                  src={webformatURL}
+                  key={id}
+                  largeImageURL={largeImageURL}
+                />
+              ))}
           </ul>
-          {showModal && (
-            <Modal onClose={toggleModal}>
-              <img src={selectPicture.src} alt={selectPicture.alt} />
-            </Modal>
-          )}
+          <Button onLoadMore={handleLoadMore} />
         </>
       );
     }
