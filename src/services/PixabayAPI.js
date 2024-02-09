@@ -14,21 +14,9 @@ const instance = axios.create({
 });
 // Запрос на сервер
  
-function fetchhPhoto (value, page = 1)  {
-  return instance({ params: { q: `${value}`, page: `${page}` } })
-    .then(function (pictures) {
-      if (pictures.status === 200) {
-        if (pictures.data.total===0) {
-          return Promise.reject(
-            new Error(`Не найдено картинок с названием ${value}`)
-          );
-        }
-        return pictures;
-      }
-      
-    }
-  )
+async function fetchPhoto (value="", page = 1)  {
+  return await instance({ params: { q: `${value}`, page: `${page}` } })
 };
 
-const api = { fetchhPhoto };
-export default api;
+const API = { fetchPhoto };
+export default API;

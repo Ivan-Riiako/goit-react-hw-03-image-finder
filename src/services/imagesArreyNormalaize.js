@@ -1,8 +1,7 @@
 export default function imagesArreyNormalaize(arrayImages) {
-    const {
-      data: { totalHits, hits: arrayPictures },
-    } = arrayImages;
-    const totalPage = (totalHits / 12).toFixed(1);
-    return { totalPage, arrayPictures };
+  const {
+    data: { totalHits, hits: arrayPictures },
+  } = arrayImages;
+  const totalPage = Math.ceil(totalHits / 12);
+  return { arrayPictures, totalPage };
 }
-
