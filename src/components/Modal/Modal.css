@@ -16,10 +16,11 @@
 }
 
 .ReactModal__Content {
+    /* либо flex чтобы все влезло */
+    display: flex;
     max-width: calc(100vw - 48px);
     max-height: calc(100vh - 24px);
-    overflow: hidden;
+    /* либо скрыть выступающую часть */
+    /* overflow: hidden; */
 
 }
-
-

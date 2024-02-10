@@ -1,16 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import style from './ImageGallery.module.css';
 import ImageGalleryItem from 'components/ImageGalleryItem';
 
-class ImageGallery extends Component {
-  state = {
-    status: `idle`,
-  };
- 
-  render() {
-    const { arrayPictures } = this.props;
-    
+const ImageGallery= ({arrayPictures})=> {
       return (
         <ul className={style.ImageGallery}>
           {arrayPictures &&
@@ -24,10 +17,16 @@ class ImageGallery extends Component {
             ))}
         </ul>
       );
-    
   }
-}
+
 ImageGallery.propTypes = {
-  arrayPictures: PropTypes.array.isRequired,
+  arrayPictures: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      webformatURL: PropTypes.string.isRequired,
+      tags: PropTypes.string.isRequired,
+      largeImageURL: PropTypes.string.isRequired,
+    })
+  ).isRequired,
 };
 export default ImageGallery;

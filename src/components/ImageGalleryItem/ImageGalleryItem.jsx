@@ -41,7 +41,7 @@ class ImageGalleryItem extends Component {
         )} */}
 
         <Modal isModalOpen={showModal} toggleModal={toggleModal}>
-          <img src={largeImageURL} alt={tags} />
+          <img  src={largeImageURL} alt={tags} />
         </Modal>
       </>
     );

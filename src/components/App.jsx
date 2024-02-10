@@ -53,7 +53,6 @@ class App extends Component {
       }
     }
   }
-
   handleLoadMore = () => {
     this.setState(prevState => ({
       currentPage: prevState.currentPage + 1,
@@ -61,8 +60,11 @@ class App extends Component {
   };
   handleSubmit = data => {
     const { value } = data;
-    if (value === '') {
+    if (value.trim() === '') {
       toast.error('the field is blank!  please enter text');
+      this.setState({
+        arrayPictures: [],
+      });
       return;
     }
     this.setState({

@@ -13,12 +13,15 @@ class Searchbar extends PureComponent {
   };
 
   handleSubmit = e => {
-   const { onSubmit } = this.props;
+    const { onSubmit } = this.props;
+    // const { value } = this.state;
 
     e.preventDefault();
-    if (this.state.value.trim === '') {
-    return
-    }
+
+    // if (value.trim() === '') {
+    // return
+    // }
+
     onSubmit(this.state);
     // e.currentTarget.reset();
   };
