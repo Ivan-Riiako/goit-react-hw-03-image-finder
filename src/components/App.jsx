@@ -61,7 +61,7 @@ class App extends Component {
   handleSubmit = data => {
     const { value } = data;
     if (value.trim() === '') {
-      toast.error('the field is blank!  please enter text');
+      toast('Please enter a search query');
       this.setState({
         arrayPictures: [],
       });

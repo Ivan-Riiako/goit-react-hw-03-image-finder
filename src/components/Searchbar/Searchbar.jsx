@@ -33,6 +33,7 @@ class Searchbar extends PureComponent {
         <form className={style.SearchForm}>
           <button
             type="submit"
+            aria-label="Search"
             className={style.SearchForm_button}
             onClick={handleSubmit}
           >
@@ -40,7 +41,7 @@ class Searchbar extends PureComponent {
                   Search
                 </span> */}
           </button>
-
+          
           <input
             onChange={handleChange}
             value={value}
@@ -49,6 +50,7 @@ class Searchbar extends PureComponent {
             autoComplete="off"
             autoFocus
             placeholder="Search images and photos"
+            aria-label="Search images and photos"
           />
         </form>
       </header>
