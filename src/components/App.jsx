@@ -1,20 +1,19 @@
 import React, { Component } from 'react';
-import toast,{Toaster} from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import style from './App.module.css';
 
 import API from 'services/PixabayAPI';
-import Searchbar from './Searchbar/Searchbar';
-import ImageGallery from './ImageGallery';
 import imagesArreyNormalaize from 'services/imagesArreyNormalaize';
 import queryNormalaize from 'services/queryNormalaize';
 
+import Searchbar from './Searchbar/Searchbar';
+import ImageGallery from './ImageGallery';
 import Loader from 'components/Loader';
 import Button from 'components/Button';
 
 class App extends Component {
   state = {
     query: '',
-    queryId: null,
     arrayPictures: [],
     isLoading: false,
     currentPage: 1,
@@ -22,7 +21,7 @@ class App extends Component {
   };
   async componentDidUpdate(_, prevState) {
     const { currentPage, query } = this.state;
-    
+
     if (prevState.query !== query || prevState.currentPage !== currentPage) {
       try {
         this.setState({
@@ -31,6 +30,16 @@ class App extends Component {
         const queryPure = queryNormalaize(query);
         const arrayImages = await API.fetchPhoto(`${queryPure}`, currentPage);
         const { arrayPictures, totalPage } = imagesArreyNormalaize(arrayImages);
+
+        if (arrayPictures.length === 0) {
+          toast('no images found, try again!', {
+            style: {
+              backgroundColor: 'rgba(209, 191, 53, 0.2',
+            },
+          });
+          return;
+        }
+
         this.setState(prevState => ({
           arrayPictures: [...prevState.arrayPictures, ...arrayPictures],
           totalPage,
@@ -52,8 +61,12 @@ class App extends Component {
   };
   handleSubmit = data => {
     const { value } = data;
+    if (value === '') {
+      toast.error('the field is blank!  please enter text');
+      return;
+    }
     this.setState({
-      query:  `${Date.now()}/${value}`,
+      query: `${Date.now()}/${value}`,
       arrayPictures: [],
       currentPage: 1,
     });
@@ -62,14 +75,15 @@ class App extends Component {
   render() {
     const { arrayPictures, isLoading, currentPage, totalPage } = this.state;
     const { handleSubmit, handleLoadMore } = this;
-    const loadMoreExsesability = totalPage > 1 && currentPage <= totalPage;
+    const loadMoreAccessibility =
+      arrayPictures.length !== 0 && currentPage < totalPage;
     return (
       <div className={style.App}>
         <Searchbar onSubmit={handleSubmit} />
         <ImageGallery arrayPictures={arrayPictures} />
         <Toaster />
-        {loadMoreExsesability && <Button onLoadMore={handleLoadMore} />}
         {isLoading && <Loader />}
+        {loadMoreAccessibility && <Button onLoadMore={handleLoadMore} />}
       </div>
     );
   }

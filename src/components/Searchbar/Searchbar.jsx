@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import style from './Searchbar.module.css';
 
 class Searchbar extends PureComponent {
@@ -13,14 +13,13 @@ class Searchbar extends PureComponent {
   };
 
   handleSubmit = e => {
-   
+   const { onSubmit } = this.props;
 
     e.preventDefault();
     if (this.state.value.trim === '') {
     return
     }
-    this.props.onSubmit(this.state);
-    // this.setState({ name: '', number: '' });
+    onSubmit(this.state);
     // e.currentTarget.reset();
   };
   render() {
@@ -28,8 +27,12 @@ class Searchbar extends PureComponent {
     const { handleChange, handleSubmit } = this;
     return (
       <header className={style.Searchbar}>
-        <form className={style.SearchForm} onClick={handleSubmit}>
-          <button type="submit" className={style.SearchForm_button}>
+        <form className={style.SearchForm}>
+          <button
+            type="submit"
+            className={style.SearchForm_button}
+            onClick={handleSubmit}
+          >
             {/* <span className={style.SearchForm_button_label} >
                   Search
                 </span> */}
@@ -49,6 +52,8 @@ class Searchbar extends PureComponent {
     );
   }
 }
-
+Searchbar.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+};
 
 export default Searchbar;
