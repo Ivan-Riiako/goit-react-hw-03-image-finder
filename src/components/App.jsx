@@ -17,7 +17,7 @@ class App extends Component {
     arrayPictures: [],
     isLoading: false,
     currentPage: 1,
-    totalPage: 1,
+    totalPage: 0,
   };
   async componentDidUpdate(_, prevState) {
     const { currentPage, query } = this.state;
@@ -60,13 +60,16 @@ class App extends Component {
   };
   handleSubmit = data => {
     const { value } = data;
+
     if (value.trim() === '') {
       toast('Please enter a search query');
       this.setState({
         arrayPictures: [],
+        totalPage:0,
       });
       return;
     }
+
     this.setState({
       query: `${Date.now()}/${value}`,
       arrayPictures: [],
@@ -77,15 +80,14 @@ class App extends Component {
   render() {
     const { arrayPictures, isLoading, currentPage, totalPage } = this.state;
     const { handleSubmit, handleLoadMore } = this;
-    const loadMoreAccessibility =
-      arrayPictures.length !== 0 && currentPage < totalPage;
+    const isLoadMore = currentPage < totalPage;
     return (
       <div className={style.App}>
         <Searchbar onSubmit={handleSubmit} />
         <ImageGallery arrayPictures={arrayPictures} />
         <Toaster />
         {isLoading && <Loader />}
-        {loadMoreAccessibility && <Button onLoadMore={handleLoadMore} />}
+        {isLoadMore && <Button onLoadMore={handleLoadMore} />}
       </div>
     );
   }
