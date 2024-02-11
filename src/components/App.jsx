@@ -33,10 +33,14 @@ class App extends Component {
         const { arrayPictures, totalPage } = imagesArreyNormalaize(arrayImages);
 
         if (arrayPictures.length === 0) {
+
           toast('no images found, try again!', {
             style: {
               backgroundColor: 'rgba(209, 191, 53, 0.2',
             },
+          });
+          this.setState({
+            error:true,
           });
           return;
         }
@@ -44,6 +48,7 @@ class App extends Component {
         this.setState(prevState => ({
           arrayPictures: [...prevState.arrayPictures, ...arrayPictures],
           totalPage,
+          error:null
         }));
       } catch (error) {
         this.setState({
@@ -84,7 +89,7 @@ class App extends Component {
   render() {
     const { arrayPictures, isLoading, currentPage, totalPage,error } = this.state;
     const { handleSubmit, handleLoadMore } = this;
-    const isLoadMore = currentPage < totalPage && !isLoading && !error; ;
+    const isLoadMore = currentPage < totalPage && !isLoading && !error; 
     return (
       <div className={style.App}>
         <Searchbar onSubmit={handleSubmit} />
