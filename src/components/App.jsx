@@ -15,6 +15,7 @@ class App extends Component {
   state = {
     query: '',
     arrayPictures: [],
+    error:null,
     isLoading: false,
     currentPage: 1,
     totalPage: 0,
@@ -45,6 +46,9 @@ class App extends Component {
           totalPage,
         }));
       } catch (error) {
+        this.setState({
+          error
+        });
         toast.error('This is an error!');
       } finally {
         this.setState({
@@ -78,13 +82,13 @@ class App extends Component {
   };
 
   render() {
-    const { arrayPictures, isLoading, currentPage, totalPage } = this.state;
+    const { arrayPictures, isLoading, currentPage, totalPage,error } = this.state;
     const { handleSubmit, handleLoadMore } = this;
-    const isLoadMore = currentPage < totalPage;
+    const isLoadMore = currentPage < totalPage && !isLoading && !error; ;
     return (
       <div className={style.App}>
         <Searchbar onSubmit={handleSubmit} />
-        <ImageGallery arrayPictures={arrayPictures} />
+        {arrayPictures.length!==0 && <ImageGallery arrayPictures={arrayPictures} />}
         <Toaster />
         {isLoading && <Loader />}
         {isLoadMore && <Button onLoadMore={handleLoadMore} />}

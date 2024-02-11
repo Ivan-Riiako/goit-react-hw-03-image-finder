@@ -6,8 +6,7 @@ import ImageGalleryItem from 'components/ImageGalleryItem';
 const ImageGallery= ({arrayPictures})=> {
       return (
         <ul className={style.ImageGallery}>
-          {arrayPictures &&
-            arrayPictures.map(({ webformatURL, tags, largeImageURL, id }) => (
+          {arrayPictures.map(({ webformatURL, tags, largeImageURL, id }) => (
               <ImageGalleryItem
                 tags={tags}
                 webformatURL={webformatURL}
